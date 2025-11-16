@@ -59,6 +59,8 @@ forestFloorTexture.wrapS = THREE.RepeatWrapping;
 forestFloorTexture.wrapT = THREE.RepeatWrapping;
 forestFloorTexture.repeat.set(2,2);
 
+const portraitTexture = textureLoader.load('/resources/textures/portrait.jpg');
+
 //Materials
 const forestFloorMaterial = new THREE.MeshPhongMaterial({ 
   map: forestFloorTexture,
@@ -84,6 +86,34 @@ const rooftopMaterial = new THREE.MeshPhongMaterial({
   shininess: 25,
   side: THREE.DoubleSide
 });
+
+const portraitMaterials  = [
+  new THREE.MeshPhongMaterial({
+    color: 0xffffff,
+    shininess: 10
+  }),
+  new THREE.MeshPhongMaterial({
+    color: 0xffffff,
+    shininess: 10
+  }),
+  new THREE.MeshPhongMaterial({
+    color: 0xffffff,
+    shininess: 10
+  }),
+  new THREE.MeshPhongMaterial({
+    color: 0xffffff,
+    shininess: 10
+  }),
+    new THREE.MeshPhongMaterial({
+    map: portraitTexture,
+    shininess: 50
+  }),
+  new THREE.MeshPhongMaterial({
+    color: 0xffffff,
+    shininess: 10
+  })
+];
+
 
 //Scene Floor
 const forestFloorGeometry = new THREE.BoxGeometry(50,0.5,50);
@@ -158,6 +188,13 @@ const treeHouseWestRoofMesh = new THREE.Mesh( treeHouseWestRoof, rooftopMaterial
 treeHouseWestRoofMesh.position.set(-2,9,0);
 treeHouseWestRoofMesh.rotation.z = degToRad(-63);
 treeHouse.add(treeHouseWestRoofMesh);
+
+//Portrait
+const portraitGeometry = new THREE.BoxGeometry(1.75, 1.18, 0.1);
+const portrait = new THREE.Mesh( portraitGeometry, portraitMaterials);
+portrait.position.set(1,7.5,-2.8);
+treeHouse.add(portrait);
+
 
 scene.add(treeHouse);
 
