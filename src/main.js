@@ -3,6 +3,7 @@ import './style.css';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { degToRad, radToDeg } from 'three/src/math/MathUtils.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -15,11 +16,45 @@ document.body.appendChild( renderer.domElement );
 
 const geometries = [];
 
+//Models
+const modelLoader = new GLTFLoader();
+
+let torterraModel;
+modelLoader.load(
+  '/resources/models/torterra/Torterra.gltf',
+  function (gltf) {
+    torterraModel = gltf.scene;
+    torterraModel.scale.set(2, 2, 2);
+    torterraModel.position.set(5, -1, 0);
+    torterraModel.rotation.y = degToRad(-60);
+    scene.add(torterraModel);
+  },
+  undefined,
+  function (error) {
+    console.error(error);
+  }
+);
+
+let ladderModel;
+modelLoader.load(
+  '/resources/models/ladder/scene.gltf',
+  function (gltf) {
+    ladderModel = gltf.scene;
+    ladderModel.scale.set(0.02, 0.02, 0.02);
+    ladderModel.position.set(2, 5, 4);
+    scene.add(ladderModel);
+    console.log("ladder model loaded");
+  },
+  undefined,
+  function (error) {
+    console.error(error);
+  }
+);
 
 //Textures
-const loader = new THREE.TextureLoader();
+const textureLoader = new THREE.TextureLoader();
 
-const forestFloorTexture = loader.load('../public/resources/textures/forest_leaves_02_diffuse_2k.jpg');
+const forestFloorTexture = textureLoader.load('/resources/textures/forest_leaves_02_diffuse_2k.jpg');
 forestFloorTexture.wrapS = THREE.RepeatWrapping;
 forestFloorTexture.wrapT = THREE.RepeatWrapping;
 forestFloorTexture.repeat.set(2,2);
@@ -141,8 +176,6 @@ const controls = new OrbitControls( camera, renderer.domElement );
 geometries.forEach(g => {
   scene.add(g);
 });
-
-console.log(geometries);
 
 function animate() {
 
