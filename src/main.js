@@ -14,7 +14,7 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.setAnimationLoop( animate );
 document.body.appendChild( renderer.domElement );
 
-const geometries = [];
+const treeHouse = new THREE.Group();
 
 //Models
 const modelLoader = new GLTFLoader();
@@ -89,7 +89,7 @@ const rooftopMaterial = new THREE.MeshPhongMaterial({
 const forestFloorGeometry = new THREE.BoxGeometry(50,0.5,50);
 const forestFloor = new THREE.Mesh( forestFloorGeometry, forestFloorMaterial );
 forestFloor.position.y = -1;
-geometries.push(forestFloor);
+scene.add( forestFloor );
 
 //Tree house Trunk
 const treeTrunkRadiusTop =  0.7;  
@@ -102,62 +102,64 @@ const treeTrunkGeometry = new THREE.CylinderGeometry(
 const treeTrunk = new THREE.Mesh( treeTrunkGeometry, treeTrunkMaterial );
 
 treeTrunk.position.set(0,7,0);
-geometries.push(treeTrunk);
+scene.add(treeTrunk);
 
 //Tree house floor
 const treeHouseFloorGeometry = new THREE.BoxGeometry(8,0.2,8);
 const treeHouseFloor = new THREE.Mesh( treeHouseFloorGeometry, treeHouseMaterial);
 treeHouseFloor.position.set(0,5,0);
-geometries.push(treeHouseFloor);
+treeHouse.add(treeHouseFloor);
 
 //Tree House South Wall
 const treeHouseSouthWallGeometry = new THREE.BoxGeometry(4,3,0.4);
 const treeHouseSouthWall = new THREE.Mesh( treeHouseSouthWallGeometry, treeHouseMaterial);
 treeHouseSouthWall.position.set(-1,6.5, 3);
-geometries.push(treeHouseSouthWall);
+treeHouse.add(treeHouseSouthWall);
 
 //Tree House North Wall
 const treeHouseNorthWallGeometry = new THREE.BoxGeometry(6,3,0.4);
 const treeHouseNorthWall = new THREE.Mesh( treeHouseNorthWallGeometry, treeHouseMaterial);
 treeHouseNorthWall.position.set(0,6.5, -3);
-geometries.push(treeHouseNorthWall);
+treeHouse.add(treeHouseNorthWall);
 
 //Tree House East Wall
 const treeHouseEastWallGeometry = new THREE.BoxGeometry(0.4,3,6.4);
 const treeHouseEastWall = new THREE.Mesh( treeHouseEastWallGeometry, treeHouseMaterial);
 treeHouseEastWall.position.set(3,6.5,0);
-geometries.push(treeHouseEastWall);
+treeHouse.add(treeHouseEastWall);
 
 //Tree House West Wall
 const treeHouseWestWallGeometry = new THREE.BoxGeometry(0.4,3,6.4);
 const treeHouseWestWall = new THREE.Mesh( treeHouseWestWallGeometry, treeHouseMaterial);
 treeHouseWestWall.position.set(-3,6.5,0);
-geometries.push(treeHouseWestWall);
+treeHouse.add(treeHouseWestWall);
 
 //Tree House South Roof 
 const treeHouseSouthRoof = createTriangleGeometry(8, 0.4, 2, treeHouseMaterial);
 treeHouseSouthRoof.position.set(0,9,3);
-geometries.push(treeHouseSouthRoof);
+treeHouse.add(treeHouseSouthRoof);
 
 //Tree House North Roof
 const treeHouseNorthRoof = createTriangleGeometry(8, 0.4, 2, treeHouseMaterial);
 treeHouseNorthRoof.position.set(0,9,-3);
 treeHouseNorthRoof.rotation.y = Math.PI;
-geometries.push(treeHouseNorthRoof);
+treeHouse.add(treeHouseNorthRoof);
 
 //Tree House East Roof
 const treeHouseEastRoof = new THREE.BoxGeometry(0.2,4.5,7);
 const treeHouseEastRoofMesh = new THREE.Mesh( treeHouseEastRoof, rooftopMaterial);
 treeHouseEastRoofMesh.position.set(2,9,0);
 treeHouseEastRoofMesh.rotation.z = degToRad(63);
-geometries.push(treeHouseEastRoofMesh);
+treeHouse.add(treeHouseEastRoofMesh);
 
 //Tree House West Roof
 const treeHouseWestRoof = new THREE.BoxGeometry(0.2,4.5,7);
 const treeHouseWestRoofMesh = new THREE.Mesh( treeHouseWestRoof, rooftopMaterial);
 treeHouseWestRoofMesh.position.set(-2,9,0);
 treeHouseWestRoofMesh.rotation.z = degToRad(-63);
-geometries.push(treeHouseWestRoofMesh);
+treeHouse.add(treeHouseWestRoofMesh);
+
+scene.add(treeHouse);
 
 //Scene Lighting
 const ambient = new THREE.AmbientLight(0xffffff, 1);
@@ -172,10 +174,6 @@ scene.add(sun);
 // scene.add(sunHelper);
 
 const controls = new OrbitControls( camera, renderer.domElement );
-
-geometries.forEach(g => {
-  scene.add(g);
-});
 
 function animate() {
 
