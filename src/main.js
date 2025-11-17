@@ -179,6 +179,16 @@ forestFloorTexture.repeat.set(2,2);
 
 const portraitTexture = textureLoader.load('/resources/textures/portrait.jpg');
 
+// const treeHouseTexture = textureLoader.load('/resources/textures/wood_shutter_diff_2k.jpg');
+// treeHouseTexture.wrapS = THREE.RepeatWrapping;
+// treeHouseTexture.wrapT = THREE.RepeatWrapping;
+// treeHouseTexture.repeat.set(2,2);
+
+const treeBarkTexture = textureLoader.load('/resources/textures/bark_willow_02_diff_2k.jpg');
+treeBarkTexture.wrapS = THREE.RepeatWrapping;
+treeBarkTexture.wrapT = THREE.RepeatWrapping;
+treeBarkTexture.repeat.set(1,3);
+
 //Materials
 const forestFloorMaterial = new THREE.MeshPhongMaterial({ 
   map: forestFloorTexture,
@@ -189,11 +199,13 @@ const forestFloorMaterial = new THREE.MeshPhongMaterial({
 
 const treeTrunkMaterial = new THREE.MeshPhongMaterial({
   color: 0x5e3933,
+  map: treeBarkTexture,
   shininess: 10,
   side: THREE.DoubleSide
 });
 
 const treeHouseMaterial = new THREE.MeshPhongMaterial({
+  //map: treeHouseTexture,
   color: 0x8a5443,
   shininess: 15,
   side: THREE.DoubleSide
