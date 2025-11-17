@@ -4,10 +4,12 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { degToRad, radToDeg } from 'three/src/math/MathUtils.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { gsap } from 'gsap';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-camera.position.set(0, 5, 15);
+camera.position.set(0, 10, 50);
+scene.background = new THREE.Color(0xb7e2ed);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
@@ -64,6 +66,47 @@ const randomTreePosition = (areaSize, forbiddenArea) => {
   return { x, z };
 }
 
+const focusCameraOnObject = (camera, controls, object, duration, zoom) => {
+    // Define a 45-degree angle offset (diagonal from above and behind)
+    const distance = zoom; // Adjust this to control zoom level
+    const angle = Math.PI / 4; // 45 degrees in radians
+
+    // Calculate offset vector at 45° angle
+    const offset = new THREE.Vector3(
+        distance * Math.sin(angle),
+        distance * Math.sin(angle),
+        distance * Math.cos(angle)
+    );
+
+    const newTarget = object.position.clone();
+    const newCameraPosition = object.position.clone().add(offset);
+
+    // Animate camera position
+    gsap.to(camera.position, {
+        x: newCameraPosition.x,
+        y: newCameraPosition.y,
+        z: newCameraPosition.z,
+        duration: duration,
+        ease: "power2.inOut",
+        onUpdate: () => {
+            camera.lookAt(newTarget);
+            controls.update();
+        },
+        onComplete: () => {
+            controls.target.copy(newTarget);
+            controls.update();
+        }
+    });
+
+    // Animate controls target (optional, for smooth transition)
+    gsap.to(controls.target, {
+        x: newTarget.x,
+        y: newTarget.y,
+        z: newTarget.z,
+        duration: duration,
+        ease: "power2.inOut"
+    });
+}
 
 //Pivot for Bird Animation
 const pivot = new THREE.Object3D();
@@ -320,6 +363,8 @@ scene.add(sun);
 // scene.add(sunHelper);
 
 const controls = new OrbitControls( camera, renderer.domElement );
+
+focusCameraOnObject(camera, controls, treeHouse, 2, 15);
 
 function animate() {
   requestAnimationFrame( animate );
