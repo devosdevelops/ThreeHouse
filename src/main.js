@@ -16,6 +16,53 @@ document.body.appendChild( renderer.domElement );
 
 const treeHouse = new THREE.Group();
 const tree = new THREE.Group();
+const treePositions = [];
+
+//functions
+
+const createTriangleGeometry = (baseWidth, depth, height, material) => {
+  const shape = new THREE.Shape();
+  shape.moveTo(-baseWidth / 2, 0);
+  shape.lineTo(baseWidth / 2, 0);
+  shape.lineTo(0, height);
+  shape.closePath();
+  const geom = new THREE.ExtrudeGeometry(shape, { depth: depth, bevelEnabled: false });
+  geom.center(); // center geometry so positioning is easier
+  return new THREE.Mesh(geom, material);
+}
+
+const randomTreePosition = (areaSize, forbiddenArea) => {
+  let x, z, valid;
+
+  do{
+    valid = true;
+
+    // Random point inside area
+    x = Math.random() * areaSize - areaSize / 2;
+    z = Math.random() * areaSize - areaSize / 2;
+
+    // Check forbidden area first
+    if (
+      x > forbiddenArea.minX && x < forbiddenArea.maxX &&
+      z > forbiddenArea.minZ && z < forbiddenArea.maxZ
+    ) {
+      valid = false;
+      continue;
+    }
+    // Check distance from previously placed trees
+    for (const p of treePositions) {
+      const dx = x - p.x;
+      const dz = z - p.z;
+      if (Math.sqrt(dx * dx + dz * dz) < 4) {
+        valid = false;
+        break;
+      }
+    }
+
+  } while (!valid);
+
+  return { x, z };
+}
 
 
 //Pivot for Bird Animation
@@ -247,7 +294,18 @@ tree.add(treeFolliage1);
 tree.add(treeFolliage2);
 tree.add(treeFolliage3);
 
+//generate trees
 
+const numOfTrees = 15;
+const forbiddenArea = { minX: -10, maxX: 10, minZ: -10, maxZ: 10 };
+
+for (let i = 0; i < numOfTrees; i++) {
+  const newTree = tree.clone();
+  const pos = randomTreePosition(45, forbiddenArea);
+  treePositions.push(pos);
+  newTree.position.set(pos.x, 0, pos.z);
+  scene.add(newTree);
+}
 
 //Scene Lighting
 const ambient = new THREE.AmbientLight(0xffffff, 1);
@@ -276,17 +334,3 @@ function animate() {
 
 }
 
-const createTriangleGeometry(baseWidth, depth, height, material) => {
-  const shape = new THREE.Shape();
-  shape.moveTo(-baseWidth / 2, 0);
-  shape.lineTo(baseWidth / 2, 0);
-  shape.lineTo(0, height);
-  shape.closePath();
-  const geom = new THREE.ExtrudeGeometry(shape, { depth: depth, bevelEnabled: false });
-  geom.center(); // center geometry so positioning is easier
-  return new THREE.Mesh(geom, material);
-}
-
-const randomTreePosition = () => {
-  
-}
